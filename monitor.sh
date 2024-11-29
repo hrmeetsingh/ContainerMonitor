@@ -6,6 +6,9 @@
 start_monitoring() {
     echo "Starting container monitoring..."
     docker-compose up -d
+    echo "Sample NGINX container is running."
+    echo "Access NGINX at http://localhost:8081"
+    echo "========================================"
     echo "Monitoring services are now running."
     echo "Access cAdvisor at http://localhost:8080"
     echo "Access Prometheus at http://localhost:9090"

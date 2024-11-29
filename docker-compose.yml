@@ -3,14 +3,29 @@ version: '3.8'
 
 services:
   # Main application container (example)
-  app:
+  nginx:
     image: nginx:latest
     container_name: example-app
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx-logs:/var/log/nginx
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    container_name: nginx-exporter
+    ports:
+      - "9113:9113"
+    command:
+      - -nginx.scrape-uri=http://nginx:80/stub_status
+    depends_on:
+      - nginx
 
   # cAdvisor container for monitoring
   cadvisor:
@@ -19,7 +34,6 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      # Mount Docker socket to access container information
       - /:/rootfs:ro
       - /var/run:/var/run:rw
       - /sys:/sys:ro
@@ -40,7 +54,3 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
       - cadvisor
-
-# Prometheus configuration file (prometheus.yml)
-volumes:
-  prometheus_data:
