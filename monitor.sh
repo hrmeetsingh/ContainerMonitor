@@ -40,6 +40,12 @@ stream_logs() {
     docker logs -f "$container_name"
 }
 
+# Function to query Prometheus
+prometheus_query() {
+    local query=$1
+    curl -g "http://localhost:9090/api/v1/query?query=${query}"
+}
+
 # Main script logic
 case "$1" in
     start)
@@ -54,8 +60,11 @@ case "$1" in
     stream)
         stream_logs "$2"
         ;;
+    query)
+        prometheus_query "$2"
+        ;;
     *)
-        echo "Usage: $0 {start|stop|logs <container_name>|stream <container_name>}"
+        echo "Usage: $0 {start|stop|logs <container_name>|stream <container_name>|query <query>}"
         exit 1
 esac
 
