@@ -54,3 +54,19 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
       - cadvisor
+
+  react-dashboard:
+    build: 
+      context: ./react-app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+      - cadvisor
+    networks:
+      - monitoring-network
+
+networks:
+  monitoring-network:
+    driver: bridge
