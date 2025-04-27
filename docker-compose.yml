@@ -54,6 +54,8 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
       - cadvisor
+    networks:
+      - monitoring-network
 
   react-dashboard:
     build: 
@@ -69,4 +71,4 @@ services:
 
 networks:
   monitoring-network:
-    driver: bridge
+    # driver: bridge

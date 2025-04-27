@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Container Monitoring Management Script
 
 # Function to start monitoring
 start_monitoring() {
@@ -12,6 +11,7 @@ start_monitoring() {
     echo "Monitoring services are now running."
     echo "Access cAdvisor at http://localhost:8080"
     echo "Access Prometheus at http://localhost:9090"
+    echo "Access a react based dashboard at http://localhost:3000"
 }
 
 # Function to stop monitoring

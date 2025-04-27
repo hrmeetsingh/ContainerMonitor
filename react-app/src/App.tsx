@@ -3,15 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-// import { Badge } from '@/components/ui/badge';
 import { AlertCircle, Cpu, MemoryStick, HardDrive } from 'lucide-react';
 import './App.css';
 
-// Mock Prometheus data fetching (replace with actual Prometheus API call)
 const fetchPrometheusData = async (query: string) => {
   try {
-    // In a real implementation, this would be an actual Prometheus API call
-    const response = await fetch(`/api/prometheus?query=${encodeURIComponent(query)}`, {
+    const response = await fetch(`http://localhost:9090/api/v1/query?query=${encodeURIComponent(query)}`, {
       headers: {
         'Accept': 'application/json'
       }
@@ -28,7 +25,6 @@ const fetchPrometheusData = async (query: string) => {
   }
 };
 
-// Type definitions for Prometheus metrics
 type MetricData = {
   metric: { [key: string]: string };
   values: [number, string][];
@@ -53,12 +49,11 @@ const PrometheusDashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchMetrics = async () => {
-      // Simulated metrics fetching - replace with actual Prometheus queries
       const cpuData = await fetchPrometheusData('sum(rate(node_cpu_seconds_total{mode!="idle"}[5m])) by (instance) * 100');
       const memoryData = await fetchPrometheusData('node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100');
       const diskData = await fetchPrometheusData('node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} * 100');
       
-      // Process historical data for charts
+      console.log(cpuData,memoryData,diskData);
       const processHistoricalData = (metricData: MetricData[]) => {
         if (!metricData || !metricData.length) return [];
         
@@ -69,13 +64,12 @@ const PrometheusDashboard: React.FC = () => {
       };
 
       setSystemMetrics({
-        cpu: cpuData ? parseFloat(cpuData.data.result[0].value[1]) : 0,
-        memory: memoryData ? parseFloat(memoryData.data.result[0].value[1]) : 0,
-        diskUsage: diskData ? parseFloat(diskData.data.result[0].value[1]) : 0,
-        alerts: [] // In real implementation, fetch active alerts
+        cpu: cpuData ? parseFloat(cpuData.data.result[0]?.value[1]) : 0,
+        memory: memoryData ? parseFloat(memoryData.data.result[0]?.value[1]) : 0,
+        diskUsage: diskData ? parseFloat(diskData.data.result[0]?.value[1]) : 0,
+        alerts: [] 
       });
 
-      // Simulated historical data processing
       setHistoricalData(processHistoricalData(cpuData?.data?.result));
     };
 
